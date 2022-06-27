@@ -29,19 +29,20 @@ def sitemap():
 ###CREAR MIEMBRO CON POST###
 
 @app.route('/member', methods=['POST'])
-def add_member(self):
+def add_member():
     first_name = request.json.get("first_name", None)
     age = request.json.get("age", None)
     lucky_numbers = request.json.get("lucky_numbers", None)
-    id = request.json.get("id", None)
+    #id = request.json.get("id", None)
+    id=jackson_family._generateId()
 
-    if id is None: 
-        id= self._generateId()
+    #if id is None: 
+        #id: jackson_family._generateId()
     
     member = {"first_name": first_name, "age": age, "lucky_numbers": lucky_numbers, "id": id}
     jackson_family.add_member(member)
 
-    return jsonify("msg: Member created!!!"), 200
+    return jsonify(), 200
 
 ###BORRAR MIEMBRO CON DELETE ###
 
@@ -50,6 +51,18 @@ def delete_member(member_id):
     jackson_family.delete_member(member_id)
 
     return jsonify({"done":True}), 200
+
+###OBTENER MIEMBRO POR ID Y TODOS LOS MIEMBROS CON GET
+
+@app.route('/member/<int:id>', methods=['GET'])
+def get_member_by_id(id):
+
+    member = jackson_family.get_member(id) 
+
+    if member:
+        return jsonify(member), 200
+
+    return jsonify({'error': 'Member not found'}), 404
 
 @app.route('/members', methods=['GET'])
 def get_members():
